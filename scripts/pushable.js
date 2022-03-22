@@ -1,10 +1,9 @@
 
-//*
+/*
 // debug, copypaste stuff
 if (window.my_d){ Hooks.off('updateToken', window.my_d);}
 if (window.my_rtc){Hooks.off("renderTokenConfig", window.my_rtc);}
 if (window.my_preupdatehook){ Hooks.off('preUpdateToken', window.my_preupdatehook);}
-
 socket = socketlib.registerModule("pushable");	
 socket.register("moveAsGM", doMoveAsGM);
 // */
