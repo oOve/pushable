@@ -1,17 +1,10 @@
 
-/*
-// debug, copypaste stuff
-if (window.my_d){ Hooks.off('updateToken', window.my_d);}
-if (window.my_rtc){Hooks.off("renderTokenConfig", window.my_rtc);}
-if (window.my_preupdatehook){ Hooks.off('preUpdateToken', window.my_preupdatehook);}
-socket = socketlib.registerModule("pushable");	
-socket.register("moveAsGM", doMoveAsGM);
-// */
 
-let socket;
+
+let pushable_socket;
 Hooks.once("socketlib.ready", () => {
-	socket = socketlib.registerModule("pushable");	
-	socket.register("moveAsGM", doMoveAsGM);
+	pushable_socket = socketlib.registerModule("pushable");	
+	pushable_socket.register("moveAsGM", doMoveAsGM);
 });
 
 function doMoveAsGM(token, direction){
@@ -55,68 +48,29 @@ function check_update_chain(token, direction, do_updates){
   return valid;
 }
 
-window.my_preupdatehook = Hooks.on('preUpdateToken', (token,data,move, t_id)=>{
+Hooks.on('preUpdateToken', (token,data,move, t_id)=>{
   let dx = ((hasProperty(data, 'x'))?data.x: token.data.x) - token.data.x;
   let dy = ((hasProperty(data, 'y'))?data.y: token.data.y) - token.data.y;
   let direction = {x:dx, y:dy};
-  let coll_obj = find_collision(token);
+  
+  let pot_col = {data:{id:token.id, 
+                       x: token.data.x+direction.x, 
+                       y: token.data.y+direction.y}};
+  let coll_obj = find_collision(pot_col);
   let valid = true;
   if (coll_obj){
     valid = check_update_chain(token, direction, false);
     if(valid){
-      socket.executeAsGM("moveAsGM", coll_obj, direction);
+      pushable_socket.executeAsGM("moveAsGM", coll_obj, direction);
     }    
   }
   return valid;
 });
 
 
-/*
-window.my_d = Hooks.on('updateToken', (token,data,move)=>{
-    // Do nothing unless we are the DM.
-    if (! game.users.current.isGM ) return true;
-
-    console.log('----------------------------------------------');
-    console.log(token);
-    console.log(data);
-    console.log(move);
-    console.log(token.data.x);
-    
-
-    // Get latest change in history
-    let last = canvas.tokens.history.last().data[0];
-    // Lets assume last is the right one (test is this assumption is always right)
-    console.log(last);
-    console.log(token);    
-
-    let dx = token.data.x - last.x;
-    let dy = token.data.y - last.y;
-    let sz = canvas.scene.dimensions.size;
-    let sz2 = sz/2;
-    // Since the token movement might be looong (drag and drop)
-    // lets constrain the moveable's movement to only one gridcell
-    if(dx>0){dx=sz;}
-    if(dx<0){dx=-sz;}
-    if(dy>0){dy=sz;}
-    if(dy<0){dy=-sz;}
-
-    let diff = {x:dx, y:dy};
-    
-    let coll_obj = find_collision(token);
-    if (coll_obj){
-      let valid = check_update_chain(coll_obj, diff, true);    
-      if (!valid){
-        canvas.tokens.undoHistory();
-      }
-    }
-
-});
-*/
-
-
 
 // Hook into the token config render
-window.my_rtc = Hooks.on("renderTokenConfig", (app, html) => {
+Hooks.on("renderTokenConfig", (app, html) => {
   // Create a new form group
   const formGroup = document.createElement("div");
   formGroup.classList.add("form-group");

@@ -1,21 +1,25 @@
 {
     "name": "pushable",
-    "title": "Pushable, tokens that can be pushed around",
+    "title": "Pushable tokens",
     "description": "Adds tokens that can be pushed around, respecting walls, and that will stop movement if you cannot push anything further.",
-    "author": "o_Ove",
     "version": "0.0.1",
-    "minimumCoreVersion": "9.0.0",
-    "compatibleCoreVersion": "9.7.0",
-
+    "minimumCoreVersion": "9",
+    "compatibleCoreVersion": "9",
+    "author": "o_Ove",
+	"authors": [{
+		"name": "o_Ove",
+		"discord": "Ove#4315",
+		"patreon": "https://www.patreon.com/drO_o"
+    }],
     "dependencies":[
         {"name":"socketlib"}
     ],
-
-    "scripts": ["scripts/pushable.js"],
-    "url": "https://github.com/oOve/foundry_pushable",
-    
+    "socket": true,
+    "scripts": ["./scripts/pushable.js"],    
+    "url": "https://github.com/oOve/foundry_pushable",    
     "license": "LICENSE",
     "readme": "README.md",
-    
+    "styles":[],
+    "packs": [],    
     "library": false
   }
