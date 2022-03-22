@@ -18,7 +18,7 @@
     "scripts": ["./scripts/pushable.js"],    
     "url": "https://github.com/oOve/foundry_pushable",
     "download": "https://github.com/oOve/pushable/archive/1.0.0.zip",
-    "manifest": "https://github.com/oOve/pushable/releases/latest/download/module.json",
+    "manifest": "https://raw.githubusercontent.com/oOve/pushable/stable/module.json",
 
     "license": "LICENSE",
     "readme": "README.md",

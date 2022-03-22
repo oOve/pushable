@@ -62,7 +62,7 @@ Hooks.on('preUpdateToken', (token,data,move, t_id)=>{
     valid = check_update_chain(token, direction, false);
     if(valid){
       pushable_socket.executeAsGM("moveAsGM", coll_obj, direction);
-    }    
+    }
   }
   return valid;
 });
