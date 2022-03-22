@@ -5,14 +5,17 @@
     "author": "o_Ove",
     "version": "0.0.1",
     "minimumCoreVersion": "9.0.0",
-    "compatibleCoreVersion": "9.6.0",
+    "compatibleCoreVersion": "9.7.0",
+
+    "dependencies":[
+        {"name":"socketlib"}
+    ],
 
     "scripts": ["scripts/pushable.js"],
     "url": "https://github.com/oOve/foundry_pushable",
-    "manifest": "",
+    
     "license": "LICENSE",
     "readme": "README.md",
-    "download": "",
+    
     "library": false
-
   }
