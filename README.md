@@ -2,6 +2,9 @@
 Pushable tokens for FoundryVTT.
 
 System agnostic, but will **only** work for rectangular grids.
+To set up, install the manifest below, add some tokens, and mark tokens that can be pushed as pushable in token settings.
+
+![Marking a token as pushable](/pushable%20help.png?raw=true "Marking a token as pushable")
 
 Install manually by adding the module manifest:
 
