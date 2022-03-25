@@ -49,15 +49,17 @@ function check_update_chain(token, direction, do_updates){
   return valid;
 }
 
-Hooks.on('preUpdateToken', (token,data,move, t_id)=>{  
 
+Hooks.on('preUpdateToken', (token,data,move, t_id)=>{  
+  // Validate wether move can take place
   let dx = ((hasProperty(data, 'x'))?data.x: token.data.x) - token.data.x;
   let dy = ((hasProperty(data, 'y'))?data.y: token.data.y) - token.data.y;
-  let direction = {x:dx, y:dy};
-  
+  let direction = {x:dx, y:dy};  
   let pot_col = {data:{id:token.id, 
                        x: token.data.x+direction.x, 
                        y: token.data.y+direction.y}};
+  
+  
   
   let coll_obj = find_collision(pot_col);
   let valid = true;
@@ -69,6 +71,11 @@ Hooks.on('preUpdateToken', (token,data,move, t_id)=>{
   }
   return valid;
 });
+
+
+
+
+
 
 
 
