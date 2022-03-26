@@ -201,10 +201,10 @@ Hooks.once("init", () => {
     hint: "Hold down this key while moving away from a pushable",
     editable: [
       {
-        key: "P"
+        key: "KeyP"
       }
     ],    
-    restricted: false,                         // Restrict this Keybinding to gamemaster only?    
+    restricted: false,
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   });
 
