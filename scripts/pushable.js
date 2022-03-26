@@ -9,47 +9,53 @@ Hooks.once("socketlib.ready", () => {
 
 
 function doMoveAsGM(updates){
-  for (t of updates){      
-    let tk=canvas.tokens.get(t.id);      
-    tk.document.update(t);
-  }
+  canvas.scene.updateEmbeddedDocuments('Token', updates, {pushable_triggered:true});
 }
 
 
 function rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2) {
   // Check x and y for overlap
-  if (x2 > w1 + x1 || x1 > w2 + x2 || y2 > h1 + y1 || y1 > h2 + y2){
-      return false;
-  }
-  return true;
+  return !(x2 > w1 + x1 || x1 > w2 + x2 || y2 > h1 + y1 || y1 > h2 + y2);  
 }
 
+function isPushable(token){
+  return (token.data.flags.pushable)&&(token.data.flags.pushable.isPushable);
+}
 
-function find_collision(token){  
+// Return list of tokens overlapping 'token'
+function find_collisions(token){
   let x1=token.data.x+1;
   let y1=token.data.y+1;
   let w1=token.hitArea.x + token.hitArea.width-2;
   let h1=token.hitArea.y + token.hitArea.height-2;
-  
+  let collisions = [];
+
   for (let tok of canvas.tokens.placeables){
-    if (tok.data.flags.pushable &&
-        tok.data.flags.pushable.isPushable &&
-        tok.id != token.id 
-      ){
+    if (isPushable(tok) && (tok.id != token.id) ){
         let x2=tok.data.x;
         let y2=tok.data.y;
         let w2=tok.hitArea.x + tok.hitArea.width;
         let h2=tok.hitArea.y + tok.hitArea.height;
         
         if (rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2)){
-          return tok;
+          collisions.push(tok);
         }
     }
   }
-  return null;
+  return collisions;
 }
 
+function duplicate_tk(token){
+  return {  data:{id:token.id,
+                x: token.data.x, 
+                y: token.data.y},
+            hitArea: token.hitArea,
+            id:token.id,
+            _id:token.id
+          };
+}
 
+// Does the centerpoint of 'token' collide with wall if moved along 'direction'
 function collides_with_wall(token, direction){
   let cx = token.data.x + (token.hitArea.width/2);
   let cy = token.data.y + (token.hitArea.height/2);
@@ -59,11 +65,23 @@ function collides_with_wall(token, direction){
 
 
 // Tests the candidate moved token (in its new position) coming via "direction" 
-function candidate_move(token, direction, updates){
-  let coll_obj = find_collision(token);
-  if (coll_obj){
+// Recursively tests new candidates after this move
+function candidate_move(token, direction, updates, depth){
+  let pushlimit = game.settings.get('pushable', 'max_depth');
+  if((depth > pushlimit+1)&&(pushlimit>0)){return false;} 
+  
+  let valid = true;
+  let colls = find_collisions(token);
+  // Exit early to avoid doing sqrt
+  if (colls.length==0){return valid;}
+
+  let len = Math.sqrt(direction.x**2+direction.y**2);
+  let dir = {x:direction.x/len, y:direction.y/len};
+
+  for (coll_obj of colls){
     let nx=coll_obj.data.x;
     let ny=coll_obj.data.y;
+    
     if (direction.x){ // dir.x != 0
       //                     positive                            :  negative
       nx = (direction.x>0)? (token.data.x  + token.hitArea.width): (nx = token.data.x - coll_obj.hitArea.width);
@@ -75,36 +93,122 @@ function candidate_move(token, direction, updates){
     
     // Does this "new_dir" take coll_obj through a wall?
     if (collides_with_wall(coll_obj, new_dir)){return false;}
-    updates.push({id:coll_obj.id, x:nx, y:ny});
-    return candidate_move(coll_obj, new_dir, updates);
+    updates.push({_id:coll_obj.id, id:coll_obj.id, x:nx, y:ny});
+    
+    let candidate_token = duplicate_tk(coll_obj);
+    candidate_token.data.x += new_dir.x;
+    candidate_token.data.y += new_dir.y;
+    valid &= candidate_move(candidate_token, new_dir, updates, depth+1);
   }
-  return true;
+  return valid;
 }
 
-Hooks.on('preUpdateToken', (token,data,move, t_id)=>{  
-  // Before movement, validate wether move can actually go through.
-  let nx = (hasProperty(data, 'x'))?(data.x):(token.data.x);
-  let ny = (hasProperty(data, 'y'))?(data.y):(token.data.y);
+// Returns a token overlapping point 'p', return null if none exists.
+function tokenAtPoint(p){
+  for (let tok of canvas.tokens.placeables){
+    if (p.x > tok.data.x && 
+        p.x < tok.data.x+tok.hitArea.width &&
+        p.y > tok.data.y &&
+        p.y < tok.data.y+tok.hitArea.height){
+          return tok;
+        }
+  }
+  return null;
+}
+
+// Find candidate token to be pulled in direction 'direction'
+function checkPull(token, direction, updates){
+  // l is the length of the direction vector
+  let l = Math.sqrt( direction.x**2 + direction.y**2 );
+  // nv is the normalized direction vector
+  let nv = {x:direction.x/l, y:direction.y/l};
+  let center = {x: token.data.x + token.hitArea.width/2, y: token.data.y + token.hitArea.height/2};
+  let pull_from = {x: center.x - token.hitArea.width*nv.x,
+                   y: center.y - token.hitArea.height*nv.y };
+  let ray = new Ray(pull_from, center);
+  let valid = !canvas.walls.checkCollision(ray);
+    
+  if (valid){
+    let pulle = tokenAtPoint(pull_from);
+    if (pulle && isPushable(pulle) ){
+      updates.push({id:pulle.id, x: pulle.data.x+direction.x, y: pulle.data.y+direction.y, _id:pulle.id});
+    }
+  }  
+}
+
+
+// Hook into token movemen. Push 'pushables' along with this movement, and cancel movement if pushing is not possible
+Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
+  if (hasProperty(options, 'pushable_triggered')){ return true; }  // We don't need to pre-evaluate already approved moves.
+  
+  let nx = (hasProperty(change, 'x'))?(change.x):(token.data.x);
+  let ny = (hasProperty(change, 'y'))?(change.y):(token.data.y);
   let direction = {x:nx-token.data.x, y: ny-token.data.y};
   let tok=canvas.tokens.get(token.id);
-
+  let pushlimit = game.settings.get('pushable', 'max_depth');
   let token_after_move = {data:{id:token.id,
                               x: nx, 
                               y: ny},
                           hitArea: tok.hitArea,
                           id:token.id
                         };
+
   let updates = [];
-  valid = candidate_move(token_after_move, direction, updates);
-  if (valid){
+  if (game.settings.get("pushable", "pull")){
+    let pulling = false;
+    let pk=game.keybindings.get("pushable", 'pull_key');
+    for (k of pk){pulling = pulling || keyboard.downKeys.has(k.key);}
+    
+    if (pulling){
+      checkPull(tok, direction, updates);
+    }
+  }
+  
+  valid = candidate_move(token_after_move, direction, updates, 1);
+  let over_limit = !((updates.length <= pushlimit)||(pushlimit<0));
+  if(!valid || over_limit){console.log("Pushable: Canceling movement of ", token.name, "due to:", (over_limit)?"over push limit":"wall collision")}
+  valid = valid&&(!over_limit);
+
+  if (valid && updates.length){
     // This move is valid. Execute our updates as GM
     pushable_socket.executeAsGM("moveAsGM",updates);
   }
-  return valid;
+  return valid==true;  
 });
 
 
 
+// Settings:
+Hooks.once("init", () => {    
+  game.settings.register("pushable", "pull", {
+    name: "Enable pull as well",
+    hint: "pull by pressing the pull key (default p) while moving away from a pushable token",
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true
+  });
+  game.settings.register("pushable", "max_depth", {
+    name: "Maximum pushed tokens",
+    hint: "The movement will be canceled if you try to push more than this number of tokens. Leave negative for no limit.",
+    scope: 'world',
+    config: true,
+    type: Number,
+    default: -1
+  });
+  game.keybindings.register("pushable", "pull_key", {
+    name: "The key that enables pulling of 'pushables' ",
+    hint: "Hold down this key while moving away from a pushable",
+    editable: [
+      {
+        key: "P"
+      }
+    ],    
+    restricted: false,                         // Restrict this Keybinding to gamemaster only?    
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  });
+
+});
 
 
 // Hook into the token config render
