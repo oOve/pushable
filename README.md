@@ -22,3 +22,5 @@ Demonstration video:
 [![Sokoban puzzle using pushable tokens](http://img.youtube.com/vi/FOMEqN03SUU/0.jpg)](http://www.youtube.com/watch?v=FOMEqN03SUU "Sokoban video puzzle")
 
 If you like what i do feel free to support me at https://www.patreon.com/drO_o
+
+Do you like to show off your creations, or ask questions about the module feel free to drop in at my discord channel: https://discord.gg/5CCAhsKFDp
