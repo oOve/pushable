@@ -2,7 +2,7 @@
     "name": "pushable",
     "title": "Pushable tokens",
     "description": "Adds tokens that can be pushed around, respecting walls, and that will stop movement if you cannot push anything further.",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "minimumCoreVersion": "9",
     "compatibleCoreVersion": "9",
     "author": "o_Ove",
@@ -17,7 +17,7 @@
     "socket": true,
     "scripts": ["./scripts/pushable.js"],    
     "url": "https://github.com/oOve/pushable",
-    "download": "https://github.com/oOve/pushable/archive/1.0.2.zip",
+    "download": "https://github.com/oOve/pushable/archive/1.0.3.zip",
     "manifest": "https://github.com/oOve/pushable/releases/latest/download/module.json",
 
     "license": "LICENSE",
