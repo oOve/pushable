@@ -28,7 +28,7 @@
     "socket": true,
     "esmodules": ["./scripts/pushable.mjs"],    
     "url": "https://github.com/oOve/pushable",
-    "download": "https://github.com/oOve/pushable/archive/1.0.4.zip",
+    "download": "https://github.com/oOve/pushable/archive/1.1.0.zip",
     "manifest": "https://github.com/oOve/pushable/releases/latest/download/module.json",
 
     "license": "LICENSE",
