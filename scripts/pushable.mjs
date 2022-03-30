@@ -235,6 +235,7 @@ Hooks.on("renderTokenConfig", (app, html) => {
   // Create a new form group
   const formGroup = document.createElement("div");
   formGroup.classList.add("form-group");
+  formGroup.classList.add("slim");
 
   // Create a label for this setting
   const label = document.createElement("label");
@@ -246,15 +247,30 @@ Hooks.on("renderTokenConfig", (app, html) => {
   formGroup.classList.add("form-fields");
   formGroup.append(formFields);
 
+
+  const label1 = document.createElement('label');
+  label1.textContent = Lang('Pushable');
+  formFields.append(label1);
   // Create a text input box
   const input = document.createElement("input");
   input.name = "flags.pushable.isPushable";
   input.type = "checkbox";
   formFields.append(input);
-  
-  // Insert the flags current value into the input box
-  //input.value = app.object.getFlag("pushable", "isPushable");//dis not workie
-  if ((app.object.data.flags.pushable)&&(app.object.data.flags.pushable.isPushable)){ input.checked="true"; } //lets take the long way around
+  if (app.token.getFlag(module_name, 'isPushable')){
+    input.checked = "true";
+  }
+
+  const label2 = document.createElement('label');
+  label1.textContent = Lang('Pullable');
+  formFields.append(label1);
+  // Create a text input box
+  const input2 = document.createElement("input");
+  input2.name = "flags.pushable.isPullable";
+  input2.type = "checkbox";
+  formFields.append(input2);
+  if (app.token.getFlag(module_name, 'isPullable')){
+    input2.checked = "true";
+  }
   
   // Add the form group to the bottom of the Identity tab
   html[0].querySelector("div[data-tab='character']").append(formGroup);

@@ -1,0 +1,19 @@
+{  
+    "PUSHABLE.Pushable"      : "Empurrável",
+    "PUSHABLE.Pullable"      : "Puxável",
+
+    "PUSHABLE.PullTitle"     : "Ativar Puxar",
+    "PUSHABLE.PullHint"      : "Puxe um bloco pressionando a tecla de puxar (padrão P) e se movendo para longe do bloco.",
+
+    "PUSHABLE.MaxDepth"      : "Número máximo de tokens empurráveis.",
+    "PUSHABLE.MaxHint"       : "O movimento será cancelado se vocÊ tentar empurrar um número de blocos superior ao específicado aqui. Deixe um número negativo para que não haja limite.",
+    
+    "PUSHABLE.PullKey"       : "A tecla que precisa ser usada para puxar os blocos.",
+    "PUSHABLE.PullKeyHint"   : "Pressione essa tecla e se mova para longe de um bloco.",
+    "PUSHABLE.PullKeyDefault": "KeyP",
+
+    "PUSHABLE.CantPull"      : "Eu não posso puxar esse bloco!",
+    "PUSHABLE.CantPushMax"   : "Eu não posso empurrar isso. São muitos!",
+    "PUSHABLE.CantPushWall"  : "Eu não posso empurrar isso, colide com a parede!",
+    "PUSHABLE.CantPushEntity": "Eu não posso empurrar isso, tem alguém no caminho!"
+}
