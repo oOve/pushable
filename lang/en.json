@@ -1,0 +1,19 @@
+{  
+    "PUSHABLE.Pushable"      : "Pushable",
+    "PUSHABLE.Pullable"      : "Pullable",
+
+    "PUSHABLE.PullTitle"     : "Enable pull",
+    "PUSHABLE.PullHint"      : "Pull by pressing the pull key (default P) while moving away from a pushable token.",
+
+    "PUSHABLE.MaxDepth"      : "Maximum pushed tokens",
+    "PUSHABLE.MaxHint"       : "The movement will be canceled if you try to push more than this number of tokens. Leave negative for no limit.",
+    
+    "PUSHABLE.PullKey"       : "The key that must be held to pull tokens.",
+    "PUSHABLE.PullKeyHint"   : "Hold down this key while moving away from a pushable",
+    "PUSHABLE.PullKeyDefault": "KeyP",
+
+    "PUSHABLE.CantPull"      : "I can't pull this block!",
+    "PUSHABLE.CantPushMax"   : "I can't push this, too many blocks!",
+    "PUSHABLE.CantPushWall"  : "I can't push this, collides with a wall!",
+    "PUSHABLE.CantPushEntity": "I can't push this, someone is in the way!"
+}
