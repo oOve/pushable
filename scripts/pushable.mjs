@@ -1,5 +1,17 @@
+/*
+▓█████▄  ██▀███           ▒█████  
+▒██▀ ██▌▓██ ▒ ██▒        ▒██▒  ██▒
+░██   █▌▓██ ░▄█ ▒        ▒██░  ██▒
+░▓█▄   ▌▒██▀▀█▄          ▒██   ██░
+░▒████▓ ░██▓ ▒██▒ ██▓    ░ ████▓▒░
+ ▒▒▓  ▒ ░ ▒▓ ░▒▓░ ▒▓▒    ░ ▒░▒░▒░ 
+ ░ ▒  ▒   ░▒ ░ ▒░ ░▒       ░ ▒ ▒░ 
+ ░ ░  ░   ░░   ░  ░      ░ ░ ░ ▒  
+   ░       ░       ░         ░ ░  
+ ░                 ░              
+ */
 
-
+ const MOD_NAME = "pushable";
 
 function Lang(k){
   return game.i18n.localize("PUSHABLE."+k);
@@ -84,7 +96,7 @@ function candidate_move(token, direction, updates, depth){
   let len = Math.sqrt(direction.x**2+direction.y**2);
   let dir = {x:direction.x/len, y:direction.y/len};
 
-  for (coll_obj of colls){
+  for (let coll_obj of colls){
     let nx=coll_obj.data.x;
     let ny=coll_obj.data.y;
     
@@ -131,15 +143,21 @@ function checkPull(token, direction, updates){
   let center = {x: token.data.x + token.hitArea.width/2, y: token.data.y + token.hitArea.height/2};
   let pull_from = {x: center.x - token.hitArea.width*nv.x,
                    y: center.y - token.hitArea.height*nv.y };
-  let ray = new Ray(pull_from, center);
+  let ray = new Ray(pull_from, center);  
   let valid = !canvas.walls.checkCollision(ray);
-    
+   
   if (valid){
-    let pulle = tokenAtPoint(pull_from);
-    if (pulle && isPushable(pulle) ){
-      updates.push({id:pulle.id, x: pulle.data.x+direction.x, y: pulle.data.y+direction.y, _id:pulle.id});
+    let pulle = tokenAtPoint(pull_from);  
+    if (pulle){
+      if (pulle.document.getFlag(MOD_NAME, 'isPullable')){
+        updates.push({id:pulle.id, x: pulle.data.x+direction.x, y: pulle.data.y+direction.y, _id:pulle.id});
+      }
+      else{
+        valid = false;
+      }
     }
-  }  
+  }
+  return valid;
 }
 
 
@@ -163,10 +181,14 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
   if (game.settings.get("pushable", "pull")){
     let pulling = false;
     let pk=game.keybindings.get("pushable", 'pull_key');
-    for (k of pk){pulling = pulling || keyboard.downKeys.has(k.key);}
-    
-    if (pulling){
-      checkPull(tok, direction, updates);
+    for (let k of pk){
+      pulling = pulling || keyboard.downKeys.has(k.key);
+    }
+    if (pulling){      
+      let res = checkPull(tok, direction, updates);
+      if (!res){
+        tok.hud.createScrollingText(Lang('CantPull'));
+      }
     }
   }
   
@@ -179,13 +201,13 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
     fontSize: 50}); // basically anything not duration, anchor or direction gets used for the text style.
   */
 
-  valid = candidate_move(token_after_move, direction, updates, 1);
+  let valid = candidate_move(token_after_move, direction, updates, 1);
   let over_limit = !((updates.length <= pushlimit)||(pushlimit<0));
-  if(!valid){    
-    token.hud.createScrollingText(Lang("CantPushWall"));
+  if(!valid && !over_limit){    
+    tok.hud.createScrollingText(Lang("CantPushWall"));
   }
   if(over_limit){
-    token.hud.createScrollingText(Lang("CantPushMax"));
+    tok.hud.createScrollingText(Lang("CantPushMax"));
   }
   valid = valid&&(!over_limit);
 
@@ -230,6 +252,24 @@ Hooks.once("init", () => {
 });
 
 
+function createCheckBox(app, fields, data_name, title, hint){
+  
+  const label = document.createElement('label');
+  label.textContent = title; 
+  const input = document.createElement("input");
+  input.name = 'flags.'+MOD_NAME+'.' + data_name;
+  input.type = "checkbox";
+  input.title = hint;
+  
+  if (app.token.getFlag(MOD_NAME, data_name)){
+    input.checked = "true";
+  }
+
+  fields.append(label);
+  fields.append(input);
+}
+
+
 // Hook into the token config render
 Hooks.on("renderTokenConfig", (app, html) => {
   // Create a new form group
@@ -244,33 +284,11 @@ Hooks.on("renderTokenConfig", (app, html) => {
 
   // Create a form fields container
   const formFields = document.createElement("div");
-  formGroup.classList.add("form-fields");
+  formFields.classList.add("form-fields");
   formGroup.append(formFields);
 
-
-  const label1 = document.createElement('label');
-  label1.textContent = Lang('Pushable');
-  formFields.append(label1);
-  // Create a text input box
-  const input = document.createElement("input");
-  input.name = "flags.pushable.isPushable";
-  input.type = "checkbox";
-  formFields.append(input);
-  if (app.token.getFlag(module_name, 'isPushable')){
-    input.checked = "true";
-  }
-
-  const label2 = document.createElement('label');
-  label1.textContent = Lang('Pullable');
-  formFields.append(label1);
-  // Create a text input box
-  const input2 = document.createElement("input");
-  input2.name = "flags.pushable.isPullable";
-  input2.type = "checkbox";
-  formFields.append(input2);
-  if (app.token.getFlag(module_name, 'isPullable')){
-    input2.checked = "true";
-  }
+  createCheckBox(app, formFields, 'isPushable', Lang('Pushable'), '');
+  createCheckBox(app, formFields, 'isPullable', Lang('Pullable'), '');
   
   // Add the form group to the bottom of the Identity tab
   html[0].querySelector("div[data-tab='character']").append(formGroup);
