@@ -6,16 +6,23 @@
     "minimumCoreVersion": "9",
     "compatibleCoreVersion": "9",
     "author": "o_Ove",
-	"authors": [{
-		"name": "o_Ove",
-		"discord": "Ove#4315",
-		"patreon": "https://www.patreon.com/drO_o"
+	  "authors": [{
+      "name": "o_Ove",
+      "discord": "Ove#4315",
+      "patreon": "https://www.patreon.com/drO_o"
     }],
+    "languages": [
+      {
+        "lang": "en",
+        "name": "English",
+        "path": "lang/en.json"
+      }
+    ],
     "dependencies":[
         {"name":"socketlib"}
     ],
     "socket": true,
-    "scripts": ["./scripts/pushable.js"],    
+    "esmodules": ["./scripts/pushable.mjs"],    
     "url": "https://github.com/oOve/pushable",
     "download": "https://github.com/oOve/pushable/archive/1.0.4.zip",
     "manifest": "https://github.com/oOve/pushable/releases/latest/download/module.json",

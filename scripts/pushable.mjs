@@ -1,5 +1,11 @@
 
 
+
+function Lang(k){
+  return game.i18n.localize("PUSHABLE."+k);
+}
+
+
 let pushable_socket;
 Hooks.once("socketlib.ready", () => {
   // socketlib is activated, lets register our function moveAsGM
@@ -164,9 +170,23 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
     }
   }
   
+  /*
+  token.hud.createScrollingText("Hello", {
+    duration: 5000, 
+    anchor: CONST.TEXT_ANCHOR_POINTS.TOP, 
+    direction: CONST.TEXT_ANCHOR_POINTS.LEFT, 
+    fill: "#FF0000", 
+    fontSize: 50}); // basically anything not duration, anchor or direction gets used for the text style.
+  */
+
   valid = candidate_move(token_after_move, direction, updates, 1);
   let over_limit = !((updates.length <= pushlimit)||(pushlimit<0));
-  if(!valid || over_limit){console.log("Pushable: Canceling movement of ", token.name, "due to:", (over_limit)?"over push limit":"wall collision")}
+  if(!valid){    
+    token.hud.createScrollingText(Lang("CantPushWall"));
+  }
+  if(over_limit){
+    token.hud.createScrollingText(Lang("CantPushMax"));
+  }
   valid = valid&&(!over_limit);
 
   if (valid && updates.length){
@@ -177,31 +197,30 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
 });
 
 
-
 // Settings:
 Hooks.once("init", () => {    
   game.settings.register("pushable", "pull", {
-    name: "Enable pull as well",
-    hint: "pull by pressing the pull key (default p) while moving away from a pushable token",
+    name: Lang('PullTitle'),
+    hint: Lang('PullHint'),
     scope: 'world',
     config: true,
     type: Boolean,
     default: true
   });
   game.settings.register("pushable", "max_depth", {
-    name: "Maximum pushed tokens",
-    hint: "The movement will be canceled if you try to push more than this number of tokens. Leave negative for no limit.",
+    name: Lang("MaxDepth"),
+    hint: Lang("MaxHint"),
     scope: 'world',
     config: true,
     type: Number,
     default: -1
   });
   game.keybindings.register("pushable", "pull_key", {
-    name: "The key that enables pulling of 'pushables' ",
-    hint: "Hold down this key while moving away from a pushable",
+    name: Lang('PullKey'),
+    hint: Lang("PullKeyHint"),
     editable: [
       {
-        key: "KeyP"
+        key: Lang("PullKeyDefault")
       }
     ],    
     restricted: false,
@@ -219,7 +238,7 @@ Hooks.on("renderTokenConfig", (app, html) => {
 
   // Create a label for this setting
   const label = document.createElement("label");
-  label.textContent = "Pushable";
+  label.textContent = Lang("Pushable");
   formGroup.prepend(label);
 
   // Create a form fields container
