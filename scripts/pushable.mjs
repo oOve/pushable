@@ -49,7 +49,7 @@ function find_collisions(token){
   let collisions = [];
 
   for (let tok of canvas.tokens.placeables){
-    if (isPushable(tok) && (tok.id != token.id) ){
+    if (tok.id != token.id){
         let x2=tok.data.x;
         let y2=tok.data.y;
         let w2=tok.hitArea.x + tok.hitArea.width;
@@ -64,13 +64,22 @@ function find_collisions(token){
 }
 
 function duplicate_tk(token){
-  return {  data:{id:token.id,
-                x: token.data.x, 
-                y: token.data.y},
-            hitArea: token.hitArea,
+  return {  
+          data:
+          {
             id:token.id,
-            _id:token.id
-          };
+            x: token.data.x, 
+            y: token.data.y,
+            flags: {
+              pushable: {
+                isPushable: isPushable(token)
+              }
+            }
+          },
+          hitArea: token.hitArea,
+          id:token.id,
+          _id:token.id
+        };
 }
 
 // Does the centerpoint of 'token' collide with wall if moved along 'direction'
@@ -88,17 +97,38 @@ function candidate_move(token, direction, updates, depth){
   let pushlimit = game.settings.get('pushable', 'max_depth');
   if((depth > pushlimit+1)&&(pushlimit>0)){return false;} 
   
-  let valid = true;
+  let result = {valid: true};
   let colls = find_collisions(token);
   // Exit early to avoid doing sqrt
-  if (colls.length==0){return valid;}
-
+  if (colls.length==0){return result;}
+  
   let len = Math.sqrt(direction.x**2+direction.y**2);
   let dir = {x:direction.x/len, y:direction.y/len};
+
+  let wePushable = isPushable(token);
 
   for (let coll_obj of colls){
     let nx=coll_obj.data.x;
     let ny=coll_obj.data.y;
+  
+    let collPushable = isPushable(coll_obj);
+    
+    // Are we the pushable, in that case we can't be pushed onto a non-pushble, if that setting is enabled
+    if (wePushable && !collPushable ){
+      if (game.settings.get(MOD_NAME, 'collideWithNonPushables')){
+        return {
+          valid: false,
+          reason: "CantPushEntity"
+        }
+      } else {
+        // Don't push the non-pushable in that case
+        continue;
+      }
+    }
+    // Are we not a pushable, then we can move through (into) a non-pushable
+    if (!wePushable && !collPushable ){
+      continue;
+    }
     
     if (direction.x){ // dir.x != 0
       //                     positive                            :  negative
@@ -110,15 +140,28 @@ function candidate_move(token, direction, updates, depth){
     let new_dir = {x: nx-coll_obj.data.x, y: ny-coll_obj.data.y};
     
     // Does this "new_dir" take coll_obj through a wall?
-    if (collides_with_wall(coll_obj, new_dir)){return false;}
+    if (collides_with_wall(coll_obj, new_dir)){
+      return {
+        valid: false,
+        reason: "CantPushWall"
+      };
+    }
+    
     updates.push({_id:coll_obj.id, id:coll_obj.id, x:nx, y:ny});
+    if (overLimit(updates)){
+      return {valid:false, reason: 'CantPushMax'};
+    }
     
     let candidate_token = duplicate_tk(coll_obj);
     candidate_token.data.x += new_dir.x;
     candidate_token.data.y += new_dir.y;
-    valid &= candidate_move(candidate_token, new_dir, updates, depth+1);
+    let res = candidate_move(candidate_token, new_dir, updates, depth+1);   
+    result.valid &= res.valid;
+    if (!res.valid){
+      result.reason = res.reason;
+    }
   }
-  return valid;
+  return result;
 }
 
 // Returns a token overlapping point 'p', return null if none exists.
@@ -144,20 +187,29 @@ function checkPull(token, direction, updates){
   let pull_from = {x: center.x - token.hitArea.width*nv.x,
                    y: center.y - token.hitArea.height*nv.y };
   let ray = new Ray(pull_from, center);  
-  let valid = !canvas.walls.checkCollision(ray);
-   
-  if (valid){
-    let pulle = tokenAtPoint(pull_from);  
-    if (pulle){
-      if (pulle.document.getFlag(MOD_NAME, 'isPullable')){
-        updates.push({id:pulle.id, x: pulle.data.x+direction.x, y: pulle.data.y+direction.y, _id:pulle.id});
-      }
-      else{
-        valid = false;
-      }
+  if (canvas.walls.checkCollision(ray)){
+    return {valid:false, reason: "CantPull"};
+  }
+  
+  // We also need to check if there are other tokens, than the "puller" at the destination
+  let colls = find_collisions(token);
+  //console.warn("Pulling", token.name, "at", colls);
+  if (colls.length && game.settings.get(MOD_NAME, 'collideWithNonPushables')){
+    return { valid:false, reason: "CantPullEntity" }
+  }
+
+  
+  let pulle = tokenAtPoint(pull_from);  
+  if (pulle){
+    if (pulle.document.getFlag(MOD_NAME, 'isPullable')){
+      updates.push({id:pulle.id, x: pulle.data.x+direction.x, y: pulle.data.y+direction.y, _id:pulle.id});
+    }
+    else{
+      return {valid: false, reason: "CantPull"};
     }
   }
-  return valid;
+
+  return {valid: true};
 }
 
 
@@ -172,6 +224,11 @@ function showHint(token, hint, isError=true){
     });
   }
 }
+function overLimit( updates ){
+  let limit = game.settings.get(MOD_NAME, 'max_depth');
+  let valid = (limit<0) || (updates.length <= limit);
+  return !valid;
+}
 
 
 
@@ -183,13 +240,12 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
   let ny = (hasProperty(change, 'y'))?(change.y):(token.data.y);
   let direction = {x:nx-token.data.x, y: ny-token.data.y};
   let tok=canvas.tokens.get(token.id);
-  let pushlimit = game.settings.get('pushable', 'max_depth');
-  let token_after_move = {data:{id:token.id,
-                              x: nx, 
-                              y: ny},
-                          hitArea: tok.hitArea,
-                          id:token.id
-                        };
+  
+  
+  let token_after_move = duplicate_tk(tok);
+  token_after_move.data.x = nx;
+  token_after_move.data.y = ny;
+  let res = {valid:true};
 
   let updates = [];
   if (game.settings.get("pushable", "pull")){
@@ -200,27 +256,21 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
     }
     if (pulling){      
       let res = checkPull(tok, direction, updates);
-      if (!res ){
-        showHint(tok, Lang('CantPull'));
+      if (!res.valid ){
+        showHint(tok, Lang(res.reason));
       }
     }
   }
 
-  let valid = candidate_move(token_after_move, direction, updates, 1);
-  let over_limit = !((updates.length <= pushlimit)||(pushlimit<0));
-  if(!valid && !over_limit){
-    showHint( tok, Lang("CantPushWall"));
+  res = candidate_move(token_after_move, direction, updates, 1);  
+  if(!res.valid){
+    showHint( tok, Lang(res.reason));
   }
-  if(over_limit){
-    showHint(tok, Lang("CantPushMax"));
-  }
-  valid = valid&&(!over_limit);
-
-  if (valid && updates.length){
+  if (res.valid && updates.length){
     // This move is valid. Execute our updates as GM
     pushable_socket.executeAsGM("moveAsGM",updates);
   }
-  return valid==true;  
+  return res.valid==true;  
 });
 
 
@@ -229,6 +279,14 @@ Hooks.once("init", () => {
   game.settings.register("pushable", "pull", {
     name: Lang('PullTitle'),
     hint: Lang('PullHint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true
+  });
+  game.settings.register("pushable", "collideWithNonPushables", {
+    name: Lang('collideWithNonPushables'),
+    hint: Lang('collideWithNonPushablesHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -265,8 +323,8 @@ Hooks.once("init", () => {
 });
 
 
-function createCheckBox(app, fields, data_name, title, hint){
-  
+
+function createCheckBox(app, fields, data_name, title, hint){  
   const label = document.createElement('label');
   label.textContent = title; 
   const input = document.createElement("input");

@@ -13,10 +13,13 @@
     "PUSHABLE.PullKeyDefault": "KeyP",
 
     "PUSHABLE.CantPull"      : "I can't pull this block!",
+    "PUSHABLE.CantPullEntity": "I can't pull this block, someone, or something is in the way!",
     "PUSHABLE.CantPushMax"   : "I can't push this, too many blocks!",
     "PUSHABLE.CantPushWall"  : "I can't push this, collides with a wall!",
-    "PUSHABLE.CantPushEntity": "I can't push this, someone is in the way!",
+    "PUSHABLE.CantPushEntity": "I can't push this, someone, or something is in the way!",
 
     "PUSHABLE.ShowHintsTitle": "Scrolling 'error' messages", 
-    "PUSHABLE.ShowHintsText" : "Display scrolling messages/hints on failed movement."
+    "PUSHABLE.ShowHintsText" : "Display scrolling messages/hints on failed movement.",
+    "PUSHABLE.collideWithNonPushables" : "Collide with non-pushable tokens",
+    "PUSHABLE.collideWithNonPushablesHint" : "Should collisions with non-pushable tokens (regular tokens) stop movement?"
 }
