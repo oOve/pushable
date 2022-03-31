@@ -18,10 +18,24 @@ Version 1.1.1,
   * "Maximum pushed tokens" set the number of tokens that can be maximum pushed and pulled. Set to -1 if there is no limit.
 * Configure Controls:
   * The key that enables pulling
-* Localization added, support for English and Brazilian Portuguese
 
-Demonstration video:
+## Localization
+Current support for:
+* English
+* Brazilian Portuguese
+* German
 
+If you want to translate this module, download [this file](lang/en.json) and translate it. After that open an issue sharing your translation. Also share the default name convention for your language. You can find that by either, finding a system or module that is already translated to your language and open its module.json. It should look something like this:
+`
+"languages": [
+      {
+        "lang": "en",
+        "name": "English",
+        "path": "lang/en.json"
+      }
+`
+
+## Demo:
 [![Sokoban puzzle using pushable tokens](http://img.youtube.com/vi/FOMEqN03SUU/0.jpg)](http://www.youtube.com/watch?v=FOMEqN03SUU "Sokoban video puzzle")
 
 Do you like this module?; then please support me at [Patreon](https://www.patreon.com/drO_o).
