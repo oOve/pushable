@@ -20,7 +20,11 @@
         "lang": "pt-BR",
         "name": "Português Brasileiro",
         "path": "lang/pt-BR.json"
-      }
+      },{
+        "lang": "de-DE",
+        "name": "deutsch",
+        "path": "lang/de-DE.json"
+        }
     ],
     "dependencies":[
         {"name":"socketlib"}

@@ -186,7 +186,7 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
     }
     if (pulling){      
       let res = checkPull(tok, direction, updates);
-      if (!res){
+      if (!res && game.settings.get(MOD_NAME, "showHints")){
         tok.hud.createScrollingText(Lang('CantPull'));
       }
     }
@@ -203,10 +203,10 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
 
   let valid = candidate_move(token_after_move, direction, updates, 1);
   let over_limit = !((updates.length <= pushlimit)||(pushlimit<0));
-  if(!valid && !over_limit){    
+  if(!valid && !over_limit && game.settings.get(MOD_NAME, "showHints")){
     tok.hud.createScrollingText(Lang("CantPushWall"));
   }
-  if(over_limit){
+  if(over_limit && game.settings.get(MOD_NAME, "showHints")){
     tok.hud.createScrollingText(Lang("CantPushMax"));
   }
   valid = valid&&(!over_limit);
@@ -229,6 +229,14 @@ Hooks.once("init", () => {
     type: Boolean,
     default: true
   });
+  game.settings.register("pushable", "showHints", {
+    name: Lang('ShowHintsTitle'),
+    hint: Lang('ShowHintsText'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true
+  });
   game.settings.register("pushable", "max_depth", {
     name: Lang("MaxDepth"),
     hint: Lang("MaxHint"),
@@ -244,7 +252,7 @@ Hooks.once("init", () => {
       {
         key: Lang("PullKeyDefault")
       }
-    ],    
+    ],
     restricted: false,
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   });

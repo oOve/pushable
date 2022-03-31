@@ -1,0 +1,19 @@
+{  
+    "PUSHABLE.Pushable"      : "Schiebbar",
+    "PUSHABLE.Pullable"      : "ziehbar",
+
+    "PUSHABLE.PullTitle"     : "aktiviere Ziehen",
+    "PUSHABLE.PullHint"      : "Um zu ziehen, drücke die Ziehen Taste (standard P) während du dich von einem ziehbaren Marker fortbewegst.",
+
+    "PUSHABLE.MaxDepth"      : "Maximal schiebbare Marker",
+    "PUSHABLE.MaxHint"       : "Die Bewegung wird unterbrochen, wenn du mehr Marker als angegeben schieben möchtest. Negativ Wert für unbegrenztes Schieben.",
+    
+    "PUSHABLE.PullKey"       : "Die Taste die gedrückt werden muss zum Ziehen.",
+    "PUSHABLE.PullKeyHint"   : "Drücke diese Taste während du dich von einem ziehbaren Marker weg bewegst",
+    "PUSHABLE.PullKeyDefault": "KeyP",
+
+    "PUSHABLE.CantPull"      : "Ich kann diesen Block nicht ziehen!",
+    "PUSHABLE.CantPushMax"   : "Ich kann das nicht schieben, es sind zu viele Blöcke!",
+    "PUSHABLE.CantPushWall"  : "Ich kann das nicht schieben, eine Wand ist im Weg!",
+    "PUSHABLE.CantPushEntity": "Ich kann das nicht schieben, jemand ist im Weg!"
+}
