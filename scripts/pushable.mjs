@@ -161,6 +161,20 @@ function checkPull(token, direction, updates){
 }
 
 
+function showHint(token, hint, isError=true){
+  if (game.settings.get(MOD_NAME, "showHints")){
+    token.hud.createScrollingText(hint, {
+      //duration: 5000, 
+      anchor: CONST.TEXT_ANCHOR_POINTS.TOP, 
+      //direction: CONST.TEXT_ANCHOR_POINTS.LEFT, 
+      fill: (isError)?"#FF4444":"#FFFFFF", 
+      //fontSize: 50
+    });
+  }
+}
+
+
+
 // Hook into token movemen. Push 'pushables' along with this movement, and cancel movement if pushing is not possible
 Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
   if (hasProperty(options, 'pushable_triggered')){ return true; }  // We don't need to pre-evaluate already approved moves.
@@ -186,28 +200,19 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
     }
     if (pulling){      
       let res = checkPull(tok, direction, updates);
-      if (!res && game.settings.get(MOD_NAME, "showHints")){
-        tok.hud.createScrollingText(Lang('CantPull'));
+      if (!res ){
+        showHint(tok, Lang('CantPull'));
       }
     }
   }
-  
-  /*
-  token.hud.createScrollingText("Hello", {
-    duration: 5000, 
-    anchor: CONST.TEXT_ANCHOR_POINTS.TOP, 
-    direction: CONST.TEXT_ANCHOR_POINTS.LEFT, 
-    fill: "#FF0000", 
-    fontSize: 50}); // basically anything not duration, anchor or direction gets used for the text style.
-  */
 
   let valid = candidate_move(token_after_move, direction, updates, 1);
   let over_limit = !((updates.length <= pushlimit)||(pushlimit<0));
-  if(!valid && !over_limit && game.settings.get(MOD_NAME, "showHints")){
-    tok.hud.createScrollingText(Lang("CantPushWall"));
+  if(!valid && !over_limit){
+    showHint( tok, Lang("CantPushWall"));
   }
-  if(over_limit && game.settings.get(MOD_NAME, "showHints")){
-    tok.hud.createScrollingText(Lang("CantPushMax"));
+  if(over_limit){
+    showHint(tok, Lang("CantPushMax"));
   }
   valid = valid&&(!over_limit);
 

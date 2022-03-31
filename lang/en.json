@@ -15,5 +15,8 @@
     "PUSHABLE.CantPull"      : "I can't pull this block!",
     "PUSHABLE.CantPushMax"   : "I can't push this, too many blocks!",
     "PUSHABLE.CantPushWall"  : "I can't push this, collides with a wall!",
-    "PUSHABLE.CantPushEntity": "I can't push this, someone is in the way!"
+    "PUSHABLE.CantPushEntity": "I can't push this, someone is in the way!",
+
+    "PUSHABLE.ShowHintsTitle": "Scrolling 'error' messages", 
+    "PUSHABLE.ShowHintsText" : "Display scrolling messages/hints on failed movement."
 }
