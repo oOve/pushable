@@ -219,7 +219,7 @@ function showHint(token, hint, isError=true){
       //duration: 5000, 
       anchor: CONST.TEXT_ANCHOR_POINTS.TOP, 
       //direction: CONST.TEXT_ANCHOR_POINTS.LEFT, 
-      fill: (isError)?"#FF4444":"#FFFFFF", 
+      fill: (isError)?"#FF1111":"#FFFFFF", 
       //fontSize: 50
     });
   }
