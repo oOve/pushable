@@ -220,6 +220,7 @@ function showHint(token, hint, isError=true){
       anchor: CONST.TEXT_ANCHOR_POINTS.TOP, 
       //direction: CONST.TEXT_ANCHOR_POINTS.LEFT, 
       fill: (isError)?"#FF1111":"#FFFFFF", 
+      stroke: (isError)?"#FF1111":"#FFFFFF",
       //fontSize: 50
     });
   }
@@ -235,7 +236,8 @@ function overLimit( updates ){
 // Hook into token movemen. Push 'pushables' along with this movement, and cancel movement if pushing is not possible
 Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
   if (hasProperty(options, 'pushable_triggered')){ return true; }  // We don't need to pre-evaluate already approved moves.
-  
+  if (!hasProperty(change,'x')&&!(hasProperty(change, 'y'))){return true;}
+
   let nx = (hasProperty(change, 'x'))?(change.x):(token.data.x);
   let ny = (hasProperty(change, 'y'))?(change.y):(token.data.y);
   let direction = {x:nx-token.data.x, y: ny-token.data.y};
@@ -270,7 +272,8 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
     // This move is valid. Execute our updates as GM
     pushable_socket.executeAsGM("moveAsGM",updates);
   }
-  return res.valid==true;  
+
+  return (res.valid==true)||game.user.isGM;
 });
 
 
