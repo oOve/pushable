@@ -38,6 +38,14 @@
     "license": "LICENSE",
     "readme": "README.md",
     "styles":[],
-    "packs": [],    
+    "packs": [
+      {
+        "entity": "Actor",
+        "name": "pushable",
+        "label": "Pushable Tokens",
+        "path": "./packs/pushable.db",
+        "type": "Actor"
+      }
+    ],    
     "library": false
   }
