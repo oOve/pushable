@@ -10,7 +10,7 @@
     
     "PUSHABLE.PullKey"       : "Die Taste, die gedrückt werden muss, um zu Ziehen.",
     "PUSHABLE.PullKeyHint"   : "Drücke diese Taste, während du dich von einem ziehbaren Marker weg bewegst",
-    "PUSHABLE.PullKeyDefault": "Taste P",
+    "PUSHABLE.PullKeyDefault": "KeyP",
 
     "PUSHABLE.CantPull"      : "Ich kann diesen Block nicht ziehen!",
     "PUSHABLE.CantPullEntity": "Ich kann diesen Block nicht ziehen. Jemand oder irgendwas ist im Weg und blockiert mich.",
