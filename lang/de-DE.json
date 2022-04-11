@@ -1,19 +1,25 @@
 {  
     "PUSHABLE.Pushable"      : "Schiebbar",
-    "PUSHABLE.Pullable"      : "ziehbar",
+    "PUSHABLE.Pullable"      : "Ziehbar",
 
-    "PUSHABLE.PullTitle"     : "aktiviere Ziehen",
-    "PUSHABLE.PullHint"      : "Um zu ziehen, drücke die Ziehen Taste (standard P) während du dich von einem ziehbaren Marker fortbewegst.",
+    "PUSHABLE.PullTitle"     : "Aktiviere Ziehen",
+    "PUSHABLE.PullHint"      : "Um zu Ziehen, drücke die Ziehen Taste (Standard P) während du dich von einem ziehbaren Marker fortbewegst.",
 
     "PUSHABLE.MaxDepth"      : "Maximal schiebbare Marker",
-    "PUSHABLE.MaxHint"       : "Die Bewegung wird unterbrochen, wenn du mehr Marker als angegeben schieben möchtest. Negativ Wert für unbegrenztes Schieben.",
+    "PUSHABLE.MaxHint"       : "Die Bewegung wird unterbrochen, wenn du mehr Marker als eingestellt schieben möchtest. Ein negativer Wert ermöglicht unbegrenztes Schieben.",
     
-    "PUSHABLE.PullKey"       : "Die Taste die gedrückt werden muss zum Ziehen.",
-    "PUSHABLE.PullKeyHint"   : "Drücke diese Taste während du dich von einem ziehbaren Marker weg bewegst",
-    "PUSHABLE.PullKeyDefault": "KeyP",
+    "PUSHABLE.PullKey"       : "Die Taste, die gedrückt werden muss, um zu Ziehen.",
+    "PUSHABLE.PullKeyHint"   : "Drücke diese Taste, während du dich von einem ziehbaren Marker weg bewegst",
+    "PUSHABLE.PullKeyDefault": "Taste P",
 
     "PUSHABLE.CantPull"      : "Ich kann diesen Block nicht ziehen!",
+    "PUSHABLE.CantPullEntity": "Ich kann diesen Block nicht ziehen. Jemand oder irgendwas ist im Weg und blockiert mich.",
     "PUSHABLE.CantPushMax"   : "Ich kann das nicht schieben, es sind zu viele Blöcke!",
     "PUSHABLE.CantPushWall"  : "Ich kann das nicht schieben, eine Wand ist im Weg!",
-    "PUSHABLE.CantPushEntity": "Ich kann das nicht schieben, jemand ist im Weg!"
+    "PUSHABLE.CantPushEntity": "Ich kann das nicht schieben, jemand oder irgendwas ist im Weg!",
+
+    "PUSHABLE.ShowHintsTitle": "Bewegende Nachrichten",
+    "PUSHABLE.ShowHintsText" : "Zeige bewegende Nachrichten / Hinweise bei fehlgeschlagener Bewegung.",
+    "PUSHABLE.collideWithNonPushables" : "Kollision mit unbeweglichen Tokens",
+    "PUSHABLE.collideWithNonPushablesHint" : "Soll die Bewegung bei Kollision mit unbeweglichen Tokens gestoppt werden?"
 }
