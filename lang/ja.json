@@ -1,0 +1,25 @@
+{  
+    "PUSHABLE.Pushable"      : "✓入れれば押せる",
+    "PUSHABLE.Pullable"      : "✓入れれば引ける",
+
+    "PUSHABLE.PullTitle"     : "押せる",
+    "PUSHABLE.PullHint"      : "引くために設定したキー（デフォルトはP）を押しながら押せるトークンから離れるように動くと、引っ張れる。",
+
+    "PUSHABLE.MaxDepth"      : "押せるトークンの最大数",
+    "PUSHABLE.MaxHint"       : "この数以上のトークンを押そうとすると、移動がキャンセルされる。数に制限を入れない場合は、負の数を入れて下さい。",
+    
+    "PUSHABLE.PullKey"       : "トークンを引っ張る時に押すキー",
+    "PUSHABLE.PullKeyHint"   : "押せるトークンから遠ざかりながらこのキーを押す。",
+    "PUSHABLE.PullKeyDefault": "Pキー",
+
+    "PUSHABLE.CantPull"      : "このブロックは引けない",
+    "PUSHABLE.CantPullEntity": "このブロックを引くには、なにか邪魔なものがある。",
+    "PUSHABLE.CantPushMax"   : "これを押すにはブロックが多すぎる。",
+    "PUSHABLE.CantPushWall"  : "壁にぶつかって押せない。",
+    "PUSHABLE.CantPushEntity": "誰か、または何かが邪魔して押せない。",
+
+    "PUSHABLE.ShowHintsTitle": "エラーメッセージをスクロールする。", 
+    "PUSHABLE.ShowHintsText" : "動かすのに失敗したときのスクロールメッセージやヒントを表示する。",
+    "PUSHABLE.collideWithNonPushables" : "押せないトークンにぶつかっている",
+    "PUSHABLE.collideWithNonPushablesHint" : "押せないトークンにぶつかった場合、移動を停止させるか？"
+}
