@@ -10,7 +10,7 @@
     
     "PUSHABLE.PullKey"       : "トークンを引っ張る時に押すキー",
     "PUSHABLE.PullKeyHint"   : "押せるトークンから遠ざかりながらこのキーを押す。",
-    "PUSHABLE.PullKeyDefault": "Pキー",
+    "PUSHABLE.PullKeyDefault": "KeyP",
 
     "PUSHABLE.CantPull"      : "このブロックは引けない",
     "PUSHABLE.CantPullEntity": "このブロックを引くには、なにか邪魔なものがある。",

@@ -20,6 +20,6 @@
 
     "PUSHABLE.ShowHintsTitle": "Scrolling 'error' messages", 
     "PUSHABLE.ShowHintsText" : "Display scrolling messages/hints on failed movement.",
-    "PUSHABLE.collideWithNonPushables" : "Collide with non-pushable tokens",
+    "PUSHABLE.collideWithNonPushables"     : "Collide with non-pushable tokens",
     "PUSHABLE.collideWithNonPushablesHint" : "Should collisions with non-pushable tokens (regular tokens) stop movement?"
 }

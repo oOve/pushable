@@ -21,9 +21,9 @@
         "name": "Português Brasileiro",
         "path": "lang/pt-BR.json"
       },{
-        "lang": "de-DE",
+        "lang": "de",
         "name": "deutsch",
-        "path": "lang/de-DE.json"
+        "path": "lang/de.json"
         },{
           "lang": "ja",
           "name": "日本語",
