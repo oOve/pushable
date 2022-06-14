@@ -31,7 +31,7 @@
       }
     ],
     "dependencies":[
-        {"name":"socketlib"}
+        {"name":"socketlib", "type": "module"}
     ],
     "socket": true,
     "esmodules": ["./scripts/pushable.mjs"],    
