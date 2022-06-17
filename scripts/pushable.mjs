@@ -346,6 +346,8 @@ function createCheckBox(app, fields, data_name, title, hint){
 
 // Hook into the token config render
 Hooks.on("renderTokenConfig", (app, html) => {
+  if (!game.user.isGM) return;
+
   // Create a new form group
   const formGroup = document.createElement("div");
   formGroup.classList.add("form-group");
