@@ -10,8 +10,8 @@
     
     "PUSHABLE.PullKey"       : "The key that must be held to pull tokens.",
     "PUSHABLE.PullKeyHint"   : "Hold down this key while moving away from a pushable",
-    "PUSHABLE.PullKeyDefault": "KeyP",
 
+    
     "PUSHABLE.CantPull"      : "I can't pull this block!",
     "PUSHABLE.CantPullEntity": "I can't pull this block, someone, or something is in the way!",
     "PUSHABLE.CantPushMax"   : "I can't push this, too many blocks!",
