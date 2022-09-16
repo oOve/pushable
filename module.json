@@ -1,10 +1,12 @@
 {
     "name": "pushable",
+    "id": "pushable",
     "title": "Pushable tokens",
     "description": "Adds tokens that can be pushed around, respecting walls, and that will stop movement if you cannot push anything further.",
-    "version": "1.2.1",
-    "minimumCoreVersion": "9",
-    "compatibleCoreVersion": "9",
+    "version": "10.0.1",
+    "compatibility": {
+      "minimum": "10",
+      "verified": "10"},
     "author": "o_Ove",
 	  "authors": [{
       "name": "o_Ove",
@@ -30,9 +32,11 @@
           "path": "lang/ja.json"
       }
     ],
-    "dependencies":[
-        {"name":"socketlib", "type": "module"}
-    ],
+    "relationships": {     
+      "requires": [
+        {"id":"socketlib", "type": "module"}
+      ]
+    },
     "socket": true,
     "esmodules": ["./scripts/pushable.mjs"],    
     "url": "https://github.com/oOve/pushable",
@@ -48,8 +52,10 @@
         "name": "pushable",
         "label": "Pushable Tokens",
         "path": "./packs/pushable.db",
-        "type": "Actor"
+        "type": "Actor",
+        "system": "dnd5e"
       }
     ],    
-    "library": false
+    "library": false,
+    "minimumCoreVersion": 10
   }
