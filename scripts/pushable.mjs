@@ -249,8 +249,6 @@ Hooks.on('preUpdateToken', (token, change, options, user_id)=>{
   token_after_move.y = ny;
   let res = {valid:true};
 
-  console.log(token, change, options, token_after_move);  
-
   let updates = [];
   if (game.settings.get("pushable", "pull")){
     let pulling = false;
